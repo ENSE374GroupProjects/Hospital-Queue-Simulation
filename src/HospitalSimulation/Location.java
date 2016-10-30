@@ -3,16 +3,16 @@ package HospitalSimulation;
 public enum Location 
 {
 	//Valid locations
-	NORTHWEST("northwest"), 
-	NORTH("north"), 
-	NORTHEAST("northeast"), 
-	WEST("west"), 
-	CENTRAL("central"), 
-	EAST("east"), 
-	SOUTHWEST("southwest"), 
-	SOUTH("south"), 
-	SOUTHEAST("southwest"),
-	DEFAULT("default location");
+	NORTHWEST("Northwest"), 
+	NORTH("North"), 
+	NORTHEAST("Northeast"), 
+	WEST("West"), 
+	CENTRAL("Central"), 
+	EAST("East"), 
+	SOUTHWEST("Southwest"), 
+	SOUTH("South"), 
+	SOUTHEAST("Southwest"),
+	DEFAULT("Default location");
 	
 	//Local variable
 	private String location;

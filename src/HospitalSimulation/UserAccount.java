@@ -85,14 +85,14 @@ public class UserAccount
 		this.gender = gender;
 	}
 	
-	public void setLocation(Location newLocation)
+	public void setLocation(Location location)
 	{
-		this.currentLocation = newLocation;
+		this.currentLocation = location;
 	}
 	
-	public void setCurrentSymptom(Symptom newSymptom)
+	public void setCurrentSymptom(Symptom symptom)
 	{
-		this.currentSymptom = newSymptom;
+		this.currentSymptom = symptom;
 	}
 	
 	public void setMedicalHistory(String medicalHistory)
