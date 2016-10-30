@@ -19,7 +19,9 @@ public enum Symptom {
 	
 	/*MINOR Symptoms*/
 	STUBBEDTOE(Severity.MINOR, "Stubbed Toe"),
-	COUGH(Severity.MINOR, "Cough");
+	COUGH(Severity.MINOR, "Cough"),
+	
+	DEFAULT(Severity.DEFAULT, "Default");
 	
 	private Severity severity;
 	private String name;

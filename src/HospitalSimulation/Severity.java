@@ -7,7 +7,8 @@ public enum Severity
 	VERYURGENT("Very Urgent", 4), 
 	URGENT("Urgent", 3), 
 	STANDARD("Standard", 2), 
-	MINOR("Minor", 1);
+	MINOR("Minor", 1),
+	DEFAULT("Default", 0);
 	
 	//Local variables
 	private String gender;
