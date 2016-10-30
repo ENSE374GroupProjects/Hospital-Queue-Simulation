@@ -7,20 +7,29 @@ public class UserAccount
 	/*Attributes*/
 	private int age;
 	private String name;
-	private Location currentLocation;
+	public Location currentLocation;
 	private Gender gender;
-	private List<Symptom> medicalInfo;
+	private String medicalInfo; // Change to List<Symptom> when implemented
 	
 	/*Methods*/
 	/*Default Constructor*/
 	public UserAccount()
 	{
+		this.age = 0;
+		this.name = "Default User";
+		this.currentLocation = Location.DEFAULT;
+		this.gender = Gender.OTHER;
+		this.medicalInfo = "No pre-existing symptoms";
 		
 	}
 	
 	/*Constructor*/
-	public UserAccount(int age, String name, Location currentLocation, Gender gender, List<Symptom> medicalInfo)
+	public UserAccount(int age, String name, Location currentLocation, Gender gender, String medicalInfo)
 	{
-		
+		this.age = age;
+		this.name = name;
+		this.currentLocation = currentLocation;
+		this.gender = gender;
+		this.medicalInfo = "No pre-existing symptoms";
 	}
 }
