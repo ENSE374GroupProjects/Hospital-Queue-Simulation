@@ -152,6 +152,58 @@ public class Simulation
 		}while(true);
 	}
 	
+	//Function for obtaining a menu choice from the user
+	public char obtainMenuChoice()
+	{
+		//Declaring local variables
+		String inputString;
+		char choice;
+		boolean validChoice = false;
+
+		//Present the possible choices to the user in a menu
+		System.out.print("\n/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\\n"
+			+ "|Please indicate what you would like to do next:                           |\n"
+			+ "|\t1. Determine the hospital nearest to your location                 |\n"
+			+ "|\t2. Determine the hospital that can treat your symptom the quickest |\n"
+			+ "|\t3. Determine the travel time to a specific hospital                |\n"
+			+ "|\t4. Determine the wait time for a specific hospital                 |\n"
+			+ "|\t5. Add myself to a hospital's emergency queue                      |\n"
+			+ "|\t6. Update your symptom                                             |\n"
+			+ "|\t7. Exit the program                                                |\n"
+			+ "\\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/\n\n");
+		
+		//Create a loop that will run until the user enters a valid choice
+		do
+		{
+			//Obtain the first character of the input string and ignore the rest of the string
+			System.out.print("Please enter your selection: ");
+			inputString = input.nextLine();
+			choice = inputString.charAt(0);	
+			
+			//Evaluate the choice that was made
+			switch(choice)
+			{
+				//If the given choice is permitted, exit the loop
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+					validChoice = true;
+					break;
+				//If the given choice is not permitted, inform the user and prompt them again
+				default:
+					System.out.print("Invalid selection. ");
+					break;
+			}			
+		}while(!validChoice);		
+		
+		//Return the user's valid choice		
+		return choice;
+	}
+	
 	//Main function
 	public static void main(String[] args) 
 	{
@@ -163,6 +215,8 @@ public class Simulation
 		Gender userGender;
 		Symptom userSymptom;
 		Location userLocation;
+		char menuChoice;
+		boolean anotherSelection = true;
 		
 		//Welcome the user to the program
 		System.out.println("Welcome to the hospital emergency queue management system.");
@@ -191,5 +245,45 @@ public class Simulation
 		
 		//Print the user's information to the console
 		System.out.println("\nYour information is as follows: " + user.getName() + ", " + user.getAge() + ", " + user.getGender() + ". Experiencing " + user.getCurrentSymptom() + " in the " + user.getLocation() + " region of Regina.");
+	
+		//Create a loop that will allow the user to interact with the application for as long as they require
+		do
+		{			
+			//Present a menu of options to the user and obtain the result
+			menuChoice = userInterface.obtainMenuChoice();
+			
+			//Call the appropriate function based on the user's response
+			switch(menuChoice)
+			{
+				//Determine the nearest hospital
+				case '1':
+					break;
+					
+				//Determine the hospital that can treat the user's symptom the quickest				
+				case '2':
+					break;
+					
+				//Determine the travel time to a specific hospital
+				case '3':
+					break;
+					
+				//Determine the wait time for a specific hospital
+				case '4':
+					break;
+					
+				//Add the user to a hospital's emergency queue
+				case '5':
+					break;
+					
+				//Update the user's symptom
+				case '6':
+					break;
+					
+				//Exit the program
+				case '7':
+					System.out.println("Goodbye!");
+					anotherSelection = false;
+			}
+		}while(anotherSelection);
 	}
 }

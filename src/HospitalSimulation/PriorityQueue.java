@@ -4,7 +4,7 @@ import java.util.*;
 public class PriorityQueue 
 {
 	//Creates an array list using the UserAccount data type.
-	private ArrayList<UserAccount> queue = new ArrayList();
+	private ArrayList<UserAccount> queue = new ArrayList<UserAccount>();
 	private int currentSize;
 	
 	public PriorityQueue() 
