@@ -1,7 +1,5 @@
 package HospitalSimulation;
 
-import java.util.List;
-
 public class UserAccount
 {
 	/*==================ATTRIBUTES=================*/

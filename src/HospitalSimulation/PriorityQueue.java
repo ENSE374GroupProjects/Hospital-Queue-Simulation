@@ -72,7 +72,7 @@ public class PriorityQueue
 				//Continue to check the tree.
 				percolateDown(swapIndex);
 			}
-			//No swapping nessecary
+			//No swapping necessary
 		}
 		//The index was larger than the heap.
 		return;
