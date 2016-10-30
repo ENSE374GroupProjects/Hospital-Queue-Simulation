@@ -23,7 +23,7 @@ public enum Location
 		this.location = location;
 	}
 	
-	//Converting the enumerated type to a string
+	//Return the enumerated type as a string
 	public String toString()
 	{
 		return this.location;
