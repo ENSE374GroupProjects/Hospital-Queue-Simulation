@@ -39,4 +39,9 @@ public class UserAccount
 	{
 		System.out.println("Pre-existing medical history: " + this.medicalInfo);
 	}
+	
+	public String getName()
+	{
+		return name;
+	}
 }
