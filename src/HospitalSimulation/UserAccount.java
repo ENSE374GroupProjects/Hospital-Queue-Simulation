@@ -7,7 +7,7 @@ public class UserAccount
 	/*Attributes*/
 	private int age;
 	private String name;
-	public Location currentLocation;
+	private Location currentLocation;
 	private Gender gender;
 	private String medicalInfo; // Change to List<Symptom> when implemented
 	
@@ -31,5 +31,12 @@ public class UserAccount
 		this.currentLocation = currentLocation;
 		this.gender = gender;
 		this.medicalInfo = "No pre-existing symptoms";
+	}
+	
+	/*showSymptoms():void*/
+	/*Display the medicalInfo Symptoms*/
+	public void showSymptoms()
+	{
+		System.out.println("Pre-existing medical history: " + this.medicalInfo);
 	}
 }
