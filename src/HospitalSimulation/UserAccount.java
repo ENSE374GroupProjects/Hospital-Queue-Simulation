@@ -70,6 +70,38 @@ public class UserAccount
 		return medicalHistory;
 	}
 	/*---------------------------------------------*/
+	
+	/*--------------------SETTERS------------------*/
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	
+	public void setAge(int age)
+	{
+		this.age = age;
+	}
+	
+	public void setGender(Gender gender)
+	{
+		this.gender = gender;
+	}
+	
+	public void setLocation(Location newLocation)
+	{
+		this.currentLocation = newLocation;
+	}
+	
+	public void setCurrentSymptom(Symptom newSymptom)
+	{
+		this.currentSymptom = newSymptom;
+	}
+	
+	public void setMedicalHistory(String medicalHistory)
+	{
+		this.medicalHistory = medicalHistory;
+	}
+	/*---------------------------------------------*/
 
 	/*showSymptoms()*/
 	/*Display the medicalInfo Symptoms*/
