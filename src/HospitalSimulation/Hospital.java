@@ -44,4 +44,45 @@ public class Hospital
 	{
 		return queue;		//return the hospital queue.
 	}
+	
+	public int determineTravelTime(Location userLocation)
+	{
+		//Assuming a 5 minute travel time between each district in the city.
+		//This switch case will fall through the cases to determine how long the user would take
+		//to get to the hospital.
+		
+		if(this.hospitalLocation == Location.CENTRAL)
+		{
+			//This determines the travel time to the general hospital based on the user's location.
+			switch(userLocation)
+			{
+				case CENTRAL: return 0;
+				case EAST:
+				case NORTH:
+				case WEST:
+				case SOUTH: return 5;
+				case NORTHEAST:
+				case NORTHWEST:
+				case SOUTHEAST:
+				case SOUTHWEST: return 10;
+			}	
+		}
+		//This determines the travel time to the pasqua hospital based on the user's location.
+		else if(this.hospitalLocation == Location.WEST)
+		{
+			switch(userLocation)
+			{
+				case WEST: return 0;
+				case NORTHWEST:
+				case SOUTHWEST:
+				case CENTRAL: return 5;
+				case NORTH:
+				case SOUTH:
+				case EAST:return 10;
+				case NORTHEAST:
+				case SOUTHEAST: return 15;
+			}	
+		}
+		return -1;
+	}
 }

@@ -83,16 +83,26 @@ public class PriorityQueue
 		int totalPriority = 0;
 		for (int i=1; i<currentSize; i++)
 		{
-			//Ad the severity of each patient in the queue and get their severity.
+			//Add the severity of each patient in the queue and get their severity.
 			totalPriority += queue.get(i).getCurrentSymptom().getSeverityIndex();
 		}
 		return totalPriority;
 	}
 	
-	public int getTotalWait()
+	public int getTotalWait(Symptom userSeverity)
 	{
 		//Assume 4 minutes for each level of severity in the queue.
-		return getTotalPriority() * 4;
+		int totalWait = 0;
+		for (int i=1; i<currentSize; i++)
+		{
+			if (queue.get(i).getCurrentSymptom().getSeverityIndex() >= (userSeverity.getSeverityIndex()))
+				totalWait += queue.get(i).getCurrentSymptom().getSeverityIndex() * 4;
+			
+			//Add the total wait only if the patient in the queue has a higher severity because they will be first in line.
+			//Assume that each level of severity takes approximately 4 minutes for the hospital staff.
+			//A critical injury of severity 5 will take approximately a 20 minute wait.
+		}
+		return totalWait;
 	}
 	
 	public UserAccount Pop()

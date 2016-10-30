@@ -3,6 +3,7 @@ package HospitalSimulation;
 public enum Severity 
 {
 	//Valid severities
+	//Each severity has a related integer value used for the priority queue.
 	CRITICAL("Critical", 5), 
 	VERYURGENT("Very Urgent", 4), 
 	URGENT("Urgent", 3), 
