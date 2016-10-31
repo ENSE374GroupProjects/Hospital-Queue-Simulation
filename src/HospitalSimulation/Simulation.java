@@ -1,9 +1,10 @@
 package HospitalSimulation;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Simulation 
 {
-	public static Scanner input;
+	public Scanner input;
 	
 	//Default constructor to open a Scanner object
 	public Simulation()
@@ -204,12 +205,41 @@ public class Simulation
 		return choice;
 	}
 	
+	//Function to determine the user's hospital choice
+	public Hospital determineHospitalChoice(ArrayList<Hospital> Hospitals)
+	{
+		//Declaring local variables
+		String inputString;
+		
+		//Create a loop to obtain a valid integer value
+		do
+		{
+			//Prompt the user and store their input
+			System.out.print("Please enter a hospital: ");
+			inputString = input.nextLine();
+						
+			//Try to match the string input to a valid hospital name.
+			for (int i=0; i<Hospitals.size(); i++)
+			{
+				if (inputString.toUpperCase().equals(Hospitals.get(i).getName().toUpperCase()))
+				{
+					return Hospitals.get(i);
+				}
+			}
+			//Inform the user if their selection is invalid
+			System.out.print("Invalid hospital. ");
+		}while(true);
+	}
+		
 	//Main function
 	public static void main(String[] args) 
 	{
-		//Declaring local variables
+		//Declaring the user interface, user and hospital list
 		Simulation userInterface = new Simulation();
 		UserAccount user = new UserAccount();	
+		ArrayList<Hospital> Hospitals = new ArrayList<Hospital>();
+		
+		//Declaring local variables
 		String userName;
 		int userAge;
 		Gender userGender;
@@ -218,13 +248,33 @@ public class Simulation
 		char menuChoice;
 		boolean anotherSelection = true;
 		
+		//Instantiate the list of hospitals
+		Hospitals.add(0, new Hospital("General", Location.CENTRAL)); //General is index 0
+		Hospitals.add(1, new Hospital("Pasqua", Location.WEST));	 //Pasqua is index 1
+		
+		//Create some dummy accounts to represent current patients in the queue
+		UserAccount dummyPatient1 = new UserAccount(20, "Quinn", Location.NORTH, Gender.MALE, "Quinn's Medical History", Symptom.STUBBEDTOE);				//MINOR severity
+		UserAccount dummyPatient2 = new UserAccount(20, "Tristan", Location.SOUTHEAST, Gender.MALE, "Tristan's Medical History", Symptom.CARDIACARREST);	//CRITICAL severity
+		UserAccount dummyPatient3 = new UserAccount(21, "Jon", Location.SOUTHWEST, Gender.MALE, "Jon's Medical History", Symptom.CHESTPAIN);				//VERYURGENT severity	
+		UserAccount dummyPatient4 = new UserAccount(78, "Leanne", Location.CENTRAL, Gender.FEMALE, "Leanne's Medical History", Symptom.FEVER);				//URGENT severity
+		UserAccount dummyPatient5 = new UserAccount(19, "Armin", Location.NORTHWEST, Gender.MALE, "Armin's Medical History", Symptom.SPRAIN);				//STANDARD severity
+		
+		//Add the dummy users to the General hospital
+		Hospitals.get(0).getQueue().addPatient(dummyPatient1);
+		Hospitals.get(0).getQueue().addPatient(dummyPatient2);
+		
+		//Add the dummy users to the Pasqua hospital
+		Hospitals.get(1).getQueue().addPatient(dummyPatient3);
+		Hospitals.get(1).getQueue().addPatient(dummyPatient4);
+		Hospitals.get(1).getQueue().addPatient(dummyPatient5);
+		
 		//Welcome the user to the program
 		System.out.println("Welcome to the hospital emergency queue management system.");
 		System.out.println("For simplicity's sake, this app will only utilize the General and Pasqua hospitals.\n");
 		
 		//Obtain and set the user's name
 		System.out.print("Please enter your name: ");
-		userName = input.nextLine();
+		userName = userInterface.input.nextLine();
 		user.setName(userName);
 		
 		//Obtain and set the user's age
@@ -257,32 +307,87 @@ public class Simulation
 			{
 				//Determine the nearest hospital
 				case '1':
+				{
+					//Set the default hospital to the General
+					Hospital nearestHospital = Hospitals.get(0);
+					for (int i=1; i<Hospitals.size(); i++)
+					{
+						//Loop through the remaining hospitals in the list to determine if they are closer.
+						if (Hospitals.get(i).determineTravelTime(user.getLocation()) < nearestHospital.determineTravelTime(user.getLocation()))
+						{
+							nearestHospital = Hospitals.get(i);		//Update the nearest
+						}
+					}
+					System.out.println("The nearest hospital is the " + nearestHospital.getName() + " Hospital.");
 					break;
+				}
 					
 				//Determine the hospital that can treat the user's symptom the quickest				
 				case '2':
+				{
+					//Default to the first hospital
+					Hospital fastestTreatment = Hospitals.get(0);
+					int travelTime = Hospitals.get(0).determineTravelTime(user.getLocation());			//Determine the travel time to the hospital from the user's location
+					int waitTime = Hospitals.get(0).getQueue().getTotalWait(user.getCurrentSymptom());	//Determine the specific hospital's wait time
+					int totalWaitTime =  waitTime + travelTime;
+					int fastestWaitTime = totalWaitTime;												//Default fastest wait time.
+					
+					//Analyze the remaining hospitals in the list
+					for (int i=1; i<Hospitals.size(); i++)
+					{
+						travelTime = Hospitals.get(i).determineTravelTime(user.getLocation());			//Determine the travel time to the hospital from the user's location
+						waitTime = Hospitals.get(i).getQueue().getTotalWait(user.getCurrentSymptom());	//Determine the specific hospital's wait time
+						totalWaitTime =  waitTime + travelTime;
+						
+						if (totalWaitTime < fastestWaitTime)
+						{
+							fastestTreatment = Hospitals.get(i);
+							fastestWaitTime = totalWaitTime;
+						}
+					}
+					System.out.println("The hospital that can treat your symptom the fastest is the " + fastestTreatment.getName() + " Hospital.");
 					break;
+				}
 					
 				//Determine the travel time to a specific hospital
 				case '3':
+				{
+					Hospital desiredHospital = userInterface.determineHospitalChoice(Hospitals);
+					System.out.println("It will take " + desiredHospital.determineTravelTime(user.getLocation()) + " minutes to get to the " + desiredHospital.getName() + " Hospital.");
 					break;
+				}
 					
 				//Determine the wait time for a specific hospital
 				case '4':
+				{
+					Hospital desiredHospital = userInterface.determineHospitalChoice(Hospitals);
+					System.out.println("It will take " + desiredHospital.getQueue().getTotalWait(user.getCurrentSymptom()) + " minutes for the " + desiredHospital.getName() + " Hospital to help you.");
 					break;
+				}
 					
 				//Add the user to a hospital's emergency queue
 				case '5':
+				{
+					Hospital desiredHospital = userInterface.determineHospitalChoice(Hospitals);
+					desiredHospital.getQueue().addPatient(user);
+					System.out.println("You were added to the " + desiredHospital.getName() + " hospital's Queue! See you in " + desiredHospital.determineTravelTime(user.getLocation()) + " minutes!");
 					break;
+				}
 					
 				//Update the user's symptom
 				case '6':
+				{
+					userSymptom = userInterface.determineUserSymptom();
+					user.setCurrentSymptom(userSymptom);
 					break;
+				}
 					
 				//Exit the program
 				case '7':
+				{
 					System.out.println("Goodbye!");
 					anotherSelection = false;
+				}
 			}
 		}while(anotherSelection);
 	}

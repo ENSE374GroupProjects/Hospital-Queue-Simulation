@@ -1,5 +1,5 @@
 package HospitalSimulation;
-import java.util.*;
+import java.util.ArrayList;
 
 public class PriorityQueue 
 {
@@ -81,7 +81,7 @@ public class PriorityQueue
 	public int getTotalPriority()
 	{
 		int totalPriority = 0;
-		for (int i=1; i<currentSize; i++)
+		for (int i=1; i<=currentSize; i++)
 		{
 			//Add the severity of each patient in the queue and get their severity.
 			totalPriority += queue.get(i).getCurrentSymptom().getSeverityIndex();
@@ -93,7 +93,7 @@ public class PriorityQueue
 	{
 		//Assume 4 minutes for each level of severity in the queue.
 		int totalWait = 0;
-		for (int i=1; i<currentSize; i++)
+		for (int i=1; i<=currentSize; i++)
 		{
 			if (queue.get(i).getCurrentSymptom().getSeverityIndex() >= (userSeverity.getSeverityIndex()))
 				totalWait += queue.get(i).getCurrentSymptom().getSeverityIndex() * 4;
@@ -122,7 +122,7 @@ public class PriorityQueue
 	public UserAccount findPatient(UserAccount Patient)
 	{
 		//Loop through the array and check if there is a similar patient in the queue.
-		for (int i=1; i<currentSize; i++)
+		for (int i=1; i<=currentSize; i++)
 		{
 			if (queue.get(i).getName().equals(Patient.getName()))
 				return queue.get(i);
