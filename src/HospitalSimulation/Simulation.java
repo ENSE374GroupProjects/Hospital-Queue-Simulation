@@ -236,6 +236,14 @@ public class Simulation
 			System.out.print("Invalid hospital. ");
 		}while(true);
 	}
+	
+	//Function to determine travel time (with a 5-minute travel time between adjacent locations)
+	public int determineTravelTime(Location userLocation, Location hospitalLocation)
+	{
+		int distance = Math.abs((userLocation.getXCoordinate() - hospitalLocation.getXCoordinate()) + (userLocation.getYCoordinate() - hospitalLocation.getYCoordinate()));
+		int time = distance * 5;
+		return time;
+	}
 		
 	//Main function
 	public static void main(String[] args) 
@@ -316,10 +324,14 @@ public class Simulation
 				{
 					//Set the default hospital to the General
 					Hospital nearestHospital = Hospitals.get(0);
+					int nearestTravelTime = userInterface.determineTravelTime(nearestHospital.getLocation(), user.getLocation());
+					int nextTravelTime;
 					for (int i=1; i<Hospitals.size(); i++)
 					{
+						nextTravelTime = userInterface.determineTravelTime(Hospitals.get(i).getLocation(), user.getLocation());
 						//Loop through the remaining hospitals in the list to determine if they are closer.
-						if (Hospitals.get(i).determineTravelTime(user.getLocation()) < nearestHospital.determineTravelTime(user.getLocation()))
+						//if (Hospitals.get(i).determineTravelTime(user.getLocation()) < nearestHospital.determineTravelTime(user.getLocation()))
+						if (nextTravelTime < nearestTravelTime)
 						{
 							nearestHospital = Hospitals.get(i);		//Update the nearest
 						}
@@ -333,7 +345,7 @@ public class Simulation
 				{
 					//Default to the first hospital
 					Hospital fastestTreatment = Hospitals.get(0);
-					int travelTime = Hospitals.get(0).determineTravelTime(user.getLocation());			//Determine the travel time to the hospital from the user's location
+					int travelTime = userInterface.determineTravelTime(Hospitals.get(0).getLocation(), user.getLocation());			//Determine the travel time to the hospital from the user's location
 					int waitTime = Hospitals.get(0).getQueue().getTotalWait(user.getCurrentSymptom());	//Determine the specific hospital's wait time
 					int totalWaitTime =  waitTime + travelTime;
 					int fastestWaitTime = totalWaitTime;												//Default fastest wait time.
@@ -341,7 +353,7 @@ public class Simulation
 					//Analyze the remaining hospitals in the list
 					for (int i=1; i<Hospitals.size(); i++)
 					{
-						travelTime = Hospitals.get(i).determineTravelTime(user.getLocation());			//Determine the travel time to the hospital from the user's location
+						travelTime = userInterface.determineTravelTime(Hospitals.get(i).getLocation(), user.getLocation());			//Determine the travel time to the hospital from the user's location
 						waitTime = Hospitals.get(i).getQueue().getTotalWait(user.getCurrentSymptom());	//Determine the specific hospital's wait time
 						totalWaitTime =  waitTime + travelTime;
 						
@@ -359,7 +371,16 @@ public class Simulation
 				case '3':
 				{
 					Hospital desiredHospital = userInterface.determineHospitalChoice(Hospitals);
-					System.out.println("It will take " + desiredHospital.determineTravelTime(user.getLocation()) + " minutes to get to the " + desiredHospital.getName() + " Hospital.");
+					int travelTime = userInterface.determineTravelTime(user.getLocation(), desiredHospital.getLocation());
+					
+					if (travelTime == 0)
+					{
+						System.out.println("It will take less than 5 minutes to get to the " + desiredHospital.getName() + " Hospital.");
+					}
+					else 
+					{
+						System.out.println("It will take " + travelTime + " minutes to get to the " + desiredHospital.getName() + " Hospital.");
+					}
 					break;
 				}
 					
@@ -376,7 +397,15 @@ public class Simulation
 				{
 					Hospital desiredHospital = userInterface.determineHospitalChoice(Hospitals);
 					desiredHospital.getQueue().addPatient(user);
-					System.out.println("You were added to the " + desiredHospital.getName() + " hospital's Queue! See you in " + desiredHospital.determineTravelTime(user.getLocation()) + " minutes!");
+					int travelTime = userInterface.determineTravelTime(user.getLocation(), desiredHospital.getLocation());
+					if (travelTime == 0)
+					{
+						System.out.println("You were added to the " + desiredHospital.getName() + " hospital's Queue! See you in less than 5 minutes!");
+					}
+					else
+					{
+						System.out.println("You were added to the " + desiredHospital.getName() + " hospital's Queue! See you in " + travelTime + " minutes!");
+					}
 					break;
 				}
 				
