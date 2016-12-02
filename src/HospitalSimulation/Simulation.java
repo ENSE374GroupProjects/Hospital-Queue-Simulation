@@ -240,10 +240,11 @@ public class Simulation
 	//Main function
 	public static void main(String[] args) 
 	{
-		//Declaring the user interface, user and hospital list
+		//Declaring the user interface, user, hospital list and vehicle list
 		Simulation userInterface = new Simulation();
 		UserAccount user = new UserAccount();	
 		ArrayList<Hospital> Hospitals = new ArrayList<Hospital>();
+		ArrayList<Vehicle> Vehicles = new ArrayList<Vehicle>();
 		
 		//Declaring local variables
 		String userName;
@@ -273,6 +274,13 @@ public class Simulation
 		Hospitals.get(1).getQueue().addPatient(dummyPatient3);
 		Hospitals.get(1).getQueue().addPatient(dummyPatient4);
 		Hospitals.get(1).getQueue().addPatient(dummyPatient5);
+		
+		//Instantiate the list of vehicles
+		Vehicles.add(0, new Ambulance(Location.NORTHWEST));
+		Vehicles.add(1, new Shuttle(Location.SOUTHEAST));
+		
+		System.out.println("Ambulance Test: " + Vehicles.get(0).getLocation() + " " + Vehicles.get(0).getSpeed());
+		System.out.println("Shuttle Test: " + Vehicles.get(1).getLocation() + " " + Vehicles.get(1).getSpeed());
 		
 		//Welcome the user to the program
 		System.out.println("Welcome to the hospital emergency queue management system.");
