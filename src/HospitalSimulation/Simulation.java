@@ -212,7 +212,7 @@ public class Simulation
 	}
 	
 	//Function to determine the user's hospital choice
-	public Hospital determineHospitalChoice(ArrayList<Hospital> Hospitals)
+	public MedicalFacility determineFacilityChoice(ArrayList<MedicalFacility> Facilities, String FacilityType)
 	{
 		//Declaring local variables
 		String inputString;
@@ -221,20 +221,32 @@ public class Simulation
 		do
 		{
 			//Prompt the user and store their input
-			System.out.print("Please enter a hospital: ");
+			System.out.print("Please enter a facility name: ");
 			inputString = input.nextLine();
 						
 			//Try to match the string input to a valid hospital name.
-			for (int i=0; i<Hospitals.size(); i++)
+			for (int i=0; i<Facilities.size(); i++)
 			{
-				if (inputString.toUpperCase().equals(Hospitals.get(i).getName().toUpperCase()))
+				if (((Facilities.get(i) instanceof Hospital) && (FacilityType == "Hospital" || FacilityType == "Any")) || ((Facilities.get(i) instanceof Clinic) && (FacilityType == "Clinic" || FacilityType == "Any")))
 				{
-					return Hospitals.get(i);
+					if (inputString.toUpperCase().equals(Facilities.get(i).getName().toUpperCase()))
+					{
+						//typecasting to a hospital because we already check that the instance is a hospital
+						return Facilities.get(i);
+					}
 				}
 			}
 			//Inform the user if their selection is invalid
-			System.out.print("Invalid hospital. ");
+			System.out.print("Invalid facility name. ");
 		}while(true);
+	}
+	
+	//Function to determine travel time (with a 5-minute travel time between adjacent locations)
+	public int determineTravelTime(Location userLocation, Location hospitalLocation)
+	{
+		int distance = Math.abs((userLocation.getXCoordinate() - hospitalLocation.getXCoordinate()) + (userLocation.getYCoordinate() - hospitalLocation.getYCoordinate()));
+		int time = distance * 5;
+		return time;
 	}
 		
 	//Main function
@@ -242,10 +254,35 @@ public class Simulation
 	{
 		//Declaring the user interface, user, hospital list and vehicle list
 		Simulation userInterface = new Simulation();
-		UserAccount user = new UserAccount();	
-		ArrayList<Hospital> Hospitals = new ArrayList<Hospital>();
+		UserAccount user = new UserAccount();
+		ArrayList<MedicalFacility> Facilities = new ArrayList<MedicalFacility>();
 		ArrayList<Ambulance> Ambulances = new ArrayList<Ambulance>();
 		ArrayList<Shuttle> Shuttles = new ArrayList<Shuttle>();
+	
+		//Instantiate the list of hospitals by adding some hospitals
+		Facilities.add(Facilities.size(), new Hospital("General Hospital", Location.CENTRAL));
+		Facilities.add(Facilities.size(), new Hospital("Pasqua Hospital", Location.WEST)); 
+		
+		//Instantiate the list of hospitals by adding some clinics
+		Facilities.add(Facilities.size(), new Clinic("Aspen Medical Clinic", Location.SOUTHEAST));
+		Facilities.add(Facilities.size(), new Clinic("Rochdale Crossing Medical Clinic", Location.NORTHWEST)); 
+		
+		//Add the dummy users to the General hospital
+		Facilities.get(0).getQueue().addPatient(new UserAccount(20, "Quinn", Location.NORTH, Gender.MALE, "Quinn's Medical History", Symptom.STUBBEDTOE));
+		Facilities.get(0).getQueue().addPatient(new UserAccount(20, "Tristan", Location.SOUTHEAST, Gender.MALE, "Tristan's Medical History", Symptom.CARDIACARREST));
+		
+		//Add the dummy users to the Pasqua hospital
+		Facilities.get(1).getQueue().addPatient(new UserAccount(21, "Jon", Location.SOUTHWEST, Gender.MALE, "Jon's Medical History", Symptom.CHESTPAIN));
+		Facilities.get(1).getQueue().addPatient(new UserAccount(78, "Leanne", Location.CENTRAL, Gender.FEMALE, "Leanne's Medical History", Symptom.FEVER));
+		Facilities.get(1).getQueue().addPatient(new UserAccount(19, "Armin", Location.NORTHWEST, Gender.MALE, "Armin's Medical History", Symptom.SPRAIN));
+		
+		//Add some random users to the Aspen Medical Clinic
+		Facilities.get(2).getQueue().addPatient(new UserAccount(35, "Joey", Location.NORTH, Gender.FEMALE, "Joey's Medical History", Symptom.SPRAIN));
+		Facilities.get(2).getQueue().addPatient(new UserAccount(24, "Brant", Location.SOUTH, Gender.MALE, "Brant's Medical History", Symptom.STUBBEDTOE));
+		
+
+		Facilities.get(3).getQueue().addPatient(new UserAccount(95, "Adam", Location.WEST, Gender.MALE, "Adam's Medical History", Symptom.ABDOMINALPAIN));
+		Facilities.get(3).getQueue().addPatient(new UserAccount(74, "Art", Location.EAST, Gender.MALE, "Art's Medical History", Symptom.COUGH));
 		
 		//Declaring local variables
 		String userName;
@@ -255,27 +292,6 @@ public class Simulation
 		Location userLocation;
 		char menuChoice;
 		boolean anotherSelection = true;
-		
-		//Instantiate the list of hospitals
-		Hospitals.add(0, new Hospital("General", Location.CENTRAL)); //General is index 0
-		Hospitals.add(1, new Hospital("Pasqua", Location.WEST));	 //Pasqua is index 1
-		
-		//Create some dummy accounts to represent current patients in the queue
-		UserAccount dummyPatient1 = new UserAccount(20, "Quinn", Location.NORTH, Gender.MALE, "Quinn's Medical History", Symptom.STUBBEDTOE);				//MINOR severity
-		UserAccount dummyPatient2 = new UserAccount(20, "Tristan", Location.SOUTHEAST, Gender.MALE, "Tristan's Medical History", Symptom.CARDIACARREST);	//CRITICAL severity
-		UserAccount dummyPatient3 = new UserAccount(21, "Jon", Location.SOUTHWEST, Gender.MALE, "Jon's Medical History", Symptom.CHESTPAIN);				//VERYURGENT severity	
-		UserAccount dummyPatient4 = new UserAccount(78, "Leanne", Location.CENTRAL, Gender.FEMALE, "Leanne's Medical History", Symptom.FEVER);				//URGENT severity
-		UserAccount dummyPatient5 = new UserAccount(19, "Armin", Location.NORTHWEST, Gender.MALE, "Armin's Medical History", Symptom.SPRAIN);				//STANDARD severity
-		
-		//Add the dummy users to the General hospital
-		Hospitals.get(0).getQueue().addPatient(dummyPatient1);
-		Hospitals.get(0).getQueue().addPatient(dummyPatient2);
-		
-		//Add the dummy users to the Pasqua hospital
-		Hospitals.get(1).getQueue().addPatient(dummyPatient3);
-		Hospitals.get(1).getQueue().addPatient(dummyPatient4);
-		Hospitals.get(1).getQueue().addPatient(dummyPatient5);
-		
 		//Instantiate the list of vehicles
 		Ambulances.add(new Ambulance(Location.NORTHWEST));
 		Shuttles.add(new Shuttle(Location.SOUTHEAST));
@@ -337,16 +353,20 @@ public class Simulation
 				case '1':
 				{
 					//Set the default hospital to the General
-					Hospital nearestHospital = Hospitals.get(0);
-					for (int i=1; i<Hospitals.size(); i++)
+					MedicalFacility nearestFacility = Facilities.get(0);
+					int nearestTravelTime = userInterface.determineTravelTime(nearestFacility.getLocation(), user.getLocation());
+					int nextTravelTime;
+					for (int i=1; i<Facilities.size(); i++)
 					{
+						nextTravelTime = userInterface.determineTravelTime(Facilities.get(i).getLocation(), user.getLocation());
 						//Loop through the remaining hospitals in the list to determine if they are closer.
-						if (Hospitals.get(i).determineTravelTime(user.getLocation()) < nearestHospital.determineTravelTime(user.getLocation()))
+						if (userInterface.determineTravelTime(user.getLocation(), Facilities.get(i).getLocation()) < userInterface.determineTravelTime(user.getLocation(), nearestFacility.getLocation()))
+						if (nextTravelTime < nearestTravelTime)
 						{
-							nearestHospital = Hospitals.get(i);		//Update the nearest
+							nearestFacility = Facilities.get(i);		//Update the nearest
 						}
 					}
-					System.out.println("The nearest hospital is the " + nearestHospital.getName() + " Hospital.");
+					System.out.println("The nearest facility is the " + nearestFacility.getName() + ".");
 					break;
 				}
 					
@@ -354,51 +374,111 @@ public class Simulation
 				case '2':
 				{
 					//Default to the first hospital
-					Hospital fastestTreatment = Hospitals.get(0);
-					int travelTime = Hospitals.get(0).determineTravelTime(user.getLocation());			//Determine the travel time to the hospital from the user's location
-					int waitTime = Hospitals.get(0).getQueue().getTotalWait(user.getCurrentSymptom());	//Determine the specific hospital's wait time
+					MedicalFacility fastestTreatment = Facilities.get(0);
+					int travelTime = userInterface.determineTravelTime(Facilities.get(0).getLocation(), user.getLocation());			//Determine the travel time to the hospital from the user's location
+					int waitTime = Facilities.get(0).getQueue().getTotalWait(user.getCurrentSymptom());	//Determine the specific hospital's wait time
 					int totalWaitTime =  waitTime + travelTime;
 					int fastestWaitTime = totalWaitTime;												//Default fastest wait time.
 					
 					//Analyze the remaining hospitals in the list
-					for (int i=1; i<Hospitals.size(); i++)
+					for (int i=1; i<Facilities.size(); i++)
 					{
-						travelTime = Hospitals.get(i).determineTravelTime(user.getLocation());			//Determine the travel time to the hospital from the user's location
-						waitTime = Hospitals.get(i).getQueue().getTotalWait(user.getCurrentSymptom());	//Determine the specific hospital's wait time
+						travelTime = userInterface.determineTravelTime(Facilities.get(i).getLocation(), user.getLocation());			//Determine the travel time to the hospital from the user's location
+						waitTime = Facilities.get(i).getQueue().getTotalWait(user.getCurrentSymptom());	//Determine the specific hospital's wait time
 						totalWaitTime =  waitTime + travelTime;
 						
 						if (totalWaitTime < fastestWaitTime)
 						{
-							fastestTreatment = Hospitals.get(i);
+							fastestTreatment = Facilities.get(i);
 							fastestWaitTime = totalWaitTime;
 						}
 					}
-					System.out.println("The hospital that can treat your symptom the fastest is the " + fastestTreatment.getName() + " Hospital.");
+					System.out.println("The facility that can treat your symptom the fastest is the " + fastestTreatment.getName() + ".");
 					break;
 				}
 					
 				//Determine the travel time to a specific facility
 				case '3':
 				{
-					Hospital desiredHospital = userInterface.determineHospitalChoice(Hospitals);
-					System.out.println("It will take " + desiredHospital.determineTravelTime(user.getLocation()) + " minutes to get to the " + desiredHospital.getName() + " Hospital.");
+					System.out.println("Possible options are:");
+					System.out.println("\t Hospitals:");
+					for (int i=0; i<Facilities.size(); i++)
+					{
+						if (Facilities.get(i) instanceof Hospital)
+							System.out.println("\t\t" + Facilities.get(i).getName());
+					}
+					System.out.println("\t Clinics:");
+					for (int i=0; i<Facilities.size(); i++)
+					{
+						if (Facilities.get(i) instanceof Clinic)
+							System.out.println("\t\t" + Facilities.get(i).getName());
+					}
+					
+					MedicalFacility desiredFacility = userInterface.determineFacilityChoice(Facilities, "Any");
+					int travelTime = userInterface.determineTravelTime(user.getLocation(), desiredFacility.getLocation());
+					
+					if (travelTime == 0)
+					{
+						System.out.println("It will take less than 5 minutes to get to the " + desiredFacility.getName() + ".");
+					}
+					else 
+					{
+						System.out.println("It will take " + travelTime + " minutes to get to the " + desiredFacility.getName() + ".");
+					}
 					break;
 				}
 					
 				//Determine the wait time for a specific facility
 				case '4':
 				{
-					Hospital desiredHospital = userInterface.determineHospitalChoice(Hospitals);
-					System.out.println("It will take " + desiredHospital.getQueue().getTotalWait(user.getCurrentSymptom()) + " minutes for the " + desiredHospital.getName() + " Hospital to help you.");
+					System.out.println("Possible options are:");
+					System.out.println("\t Hospitals:");
+					for (int i=0; i<Facilities.size(); i++)
+					{
+						if (Facilities.get(i) instanceof Hospital)
+							System.out.println("\t\t" + Facilities.get(i).getName());
+					}
+					System.out.println("\t Clinics:");
+					for (int i=0; i<Facilities.size(); i++)
+					{
+						if (Facilities.get(i) instanceof Clinic)
+							System.out.println("\t\t" + Facilities.get(i).getName());
+					}
+					
+					MedicalFacility desiredFacility = userInterface.determineFacilityChoice(Facilities, "Any");
+					int helpTime = desiredFacility.getQueue().getTotalWait(user.getCurrentSymptom());
+					if (helpTime == 0)
+					{
+						System.out.println("It will take less than 5 minutes to get to the " + desiredFacility.getName() + ".");
+					}
+					else 
+					{
+						System.out.println("It will take " + helpTime + " minutes to get to the " + desiredFacility.getName() + ".");
+					}
 					break;
 				}
 					
 				//Add the user to a hospital's emergency queue
 				case '5':
 				{
-					Hospital desiredHospital = userInterface.determineHospitalChoice(Hospitals);
+					System.out.println("Possible hospitals are:");
+					for (int i=0; i<Facilities.size(); i++)
+					{
+						if (Facilities.get(i) instanceof Hospital)
+							System.out.println("\t" + Facilities.get(i).getName());
+					}
+					
+					MedicalFacility desiredHospital = userInterface.determineFacilityChoice(Facilities, "Hospital");
 					desiredHospital.getQueue().addPatient(user);
-					System.out.println("You were added to the " + desiredHospital.getName() + " hospital's Queue! See you in " + desiredHospital.determineTravelTime(user.getLocation()) + " minutes!");
+					int travelTime = userInterface.determineTravelTime(user.getLocation(), desiredHospital.getLocation());
+					if (travelTime == 0)
+					{
+						System.out.println("You were added to the " + desiredHospital.getName() + " hospital's Queue! See you in less than 5 minutes!");
+					}
+					else
+					{
+						System.out.println("You were added to the " + desiredHospital.getName() + " hospital's Queue! See you in " + travelTime + " minutes!");
+					}
 					break;
 				}
 				
@@ -412,7 +492,33 @@ public class Simulation
 				//Add the user to a clinic's waitlist
 				case '7':
 				{
-					System.out.println("Implement clinic waitlist here.");
+
+					if (user.getCurrentSymptom().getSeverityIndex() <= 3)
+					{
+						System.out.println("Possible clinics are:");
+						for (int i=0; i<Facilities.size(); i++)
+						{
+							if (Facilities.get(i) instanceof Clinic)
+								System.out.println("\t" + Facilities.get(i).getName());
+						}
+						
+						MedicalFacility desiredClinic = userInterface.determineFacilityChoice(Facilities, "Clinic");
+						desiredClinic.getQueue().addPatient(user);
+						int travelTime = userInterface.determineTravelTime(user.getLocation(), desiredClinic.getLocation());
+						if (travelTime == 0)
+						{
+							System.out.println("You were added to the " + desiredClinic.getName() + " hospital's Queue! See you in less than 5 minutes!");
+						}
+						else
+						{
+							System.out.println("You were added to the " + desiredClinic.getName() + " hospital's Queue! See you in " + travelTime + " minutes!");
+						}
+					
+					}
+					else
+					{
+						System.out.println("A clinic cannot handle a symptom of that severity.");
+					}
 					break;
 				}
 				
