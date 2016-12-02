@@ -164,13 +164,16 @@ public class Simulation
 		//Present the possible choices to the user in a menu
 		System.out.print("\n/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\\n"
 			+ "|Please indicate what you would like to do next:                           |\n"
-			+ "|\t1. Determine the hospital nearest to your location                 |\n"
-			+ "|\t2. Determine the hospital that can treat your symptom the quickest |\n"
-			+ "|\t3. Determine the travel time to a specific hospital                |\n"
-			+ "|\t4. Determine the wait time for a specific hospital                 |\n"
+			+ "|\t1. Determine the facility nearest to your location                 |\n"
+			+ "|\t2. Determine the facility that can treat your symptom the quickest |\n"
+			+ "|\t3. Determine the travel time to a specific facility                |\n"
+			+ "|\t4. Determine the wait time for a specific facility                 |\n"
 			+ "|\t5. Add myself to a hospital's emergency queue                      |\n"
-			+ "|\t6. Update your symptom                                             |\n"
-			+ "|\t7. Exit the program                                                |\n"
+			+ "|\t6. Request an ambulance to take me to a hospital                   |\n"
+			+ "|\t7. Add myself to a clinic's waitlist                               |\n"
+			+ "|\t8. Request a shuttle to take me to a hospital or clinic            |\n"
+			+ "|\t9. Update your symptom                                             |\n"
+			+ "|\t0. Exit the program                                                |\n"
 			+ "\\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/\n\n");
 		
 		//Create a loop that will run until the user enters a valid choice
@@ -192,6 +195,9 @@ public class Simulation
 				case '5':
 				case '6':
 				case '7':
+				case '8':
+				case '9':
+				case '0':
 					validChoice = true;
 					break;
 				//If the given choice is not permitted, inform the user and prompt them again
@@ -305,7 +311,7 @@ public class Simulation
 			//Call the appropriate function based on the user's response
 			switch(menuChoice)
 			{
-				//Determine the nearest hospital
+				//Determine the nearest facility
 				case '1':
 				{
 					//Set the default hospital to the General
@@ -322,7 +328,7 @@ public class Simulation
 					break;
 				}
 					
-				//Determine the hospital that can treat the user's symptom the quickest				
+				//Determine the facility that can treat the user's symptom the quickest				
 				case '2':
 				{
 					//Default to the first hospital
@@ -349,7 +355,7 @@ public class Simulation
 					break;
 				}
 					
-				//Determine the travel time to a specific hospital
+				//Determine the travel time to a specific facility
 				case '3':
 				{
 					Hospital desiredHospital = userInterface.determineHospitalChoice(Hospitals);
@@ -357,7 +363,7 @@ public class Simulation
 					break;
 				}
 					
-				//Determine the wait time for a specific hospital
+				//Determine the wait time for a specific facility
 				case '4':
 				{
 					Hospital desiredHospital = userInterface.determineHospitalChoice(Hospitals);
@@ -373,9 +379,30 @@ public class Simulation
 					System.out.println("You were added to the " + desiredHospital.getName() + " hospital's Queue! See you in " + desiredHospital.determineTravelTime(user.getLocation()) + " minutes!");
 					break;
 				}
+				
+				//Request an ambulance
+				case '6':
+				{
+					System.out.println("Implement ambulance request here.");
+					break;
+				}
+				
+				//Add the user to a clinic's waitlist
+				case '7':
+				{
+					System.out.println("Implement clinic waitlist here.");
+					break;
+				}
+				
+				//Request a shuttle
+				case '8':
+				{
+					System.out.println("Implement shuttle request here.");
+					break;
+				}
 					
 				//Update the user's symptom
-				case '6':
+				case '9':
 				{
 					userSymptom = userInterface.determineUserSymptom();
 					user.setCurrentSymptom(userSymptom);
@@ -383,7 +410,7 @@ public class Simulation
 				}
 					
 				//Exit the program
-				case '7':
+				case '0':
 				{
 					System.out.println("Goodbye!");
 					anotherSelection = false;
