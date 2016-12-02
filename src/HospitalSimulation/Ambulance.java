@@ -16,10 +16,9 @@ public class Ambulance extends Vehicle
 	}
 	
 	//Function to model saving a patient's life
-	public boolean saveLife()
+	public void saveLife()
 	{
 		System.out.println("The ambulance is saving your life!");
-		return true;
 	}
 	
 	//Function to toggle the siren

@@ -282,11 +282,20 @@ public class Simulation
 		
 		System.out.println("Ambulance Test: " + Ambulances.get(0).getLocation() + " " + Ambulances.get(0).getSpeed());
 		System.out.println("Shuttle Test: " + Shuttles.get(0).getLocation() + " " + Shuttles.get(0).getSpeed());
-		
+				
+		System.out.println("Available?" + Ambulances.get(0).isAvailable());
+		Ambulances.get(0).setDestination(Location.CENTRAL);		
 		Ambulances.get(0).siren();
+		Ambulances.get(0).travel();
+		Ambulances.get(0).setPassenger(dummyPatient5);
 		Ambulances.get(0).saveLife();
+		System.out.println("Available?" + Ambulances.get(0).isAvailable());
+		Ambulances.get(0).travel();
+		Ambulances.get(0).setDestination(Location.EAST);
+		Ambulances.get(0).travel();
 		Ambulances.get(0).siren();
-		
+		System.out.println("Available?" + Ambulances.get(0).isAvailable());
+				
 		//Welcome the user to the program
 		System.out.println("Welcome to the hospital emergency queue management system.");
 		System.out.println("For simplicity's sake, this app will only utilize the General and Pasqua hospitals.\n");
