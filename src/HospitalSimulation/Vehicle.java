@@ -49,13 +49,16 @@ public abstract class Vehicle
 	{
 		if(this.destination == null || this.location == this.destination)
 		{
+			//If no new destination is set, inform the user and do nothing
 			System.out.println("No destination has been set.");
 		}
 		else
 		{
+			//Move the vehicle and user, before resetting the destination and passenger
 			System.out.println("Moving from " + location.toString() + " to " + destination.toString() + ".");
 			this.location = this.destination;
-			this.destination = null;
+			this.passenger.setLocation(this.location);
+			this.destination = null;			
 			this.passenger = null;
 		}
 	}
