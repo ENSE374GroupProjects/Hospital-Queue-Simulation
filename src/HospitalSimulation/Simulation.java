@@ -252,22 +252,32 @@ public class Simulation
 	//Main function
 	public static void main(String[] args) 
 	{
-		//Declaring the user interface, user and facility list
-		Simulation userInterface = new Simulation();
-		UserAccount user = new UserAccount();	
-		ArrayList<MedicalFacility> Facilities = new ArrayList<MedicalFacility>();
+		//Declaring local variables
+		String userName;
+		int userAge;
+		Gender userGender;
+		Symptom userSymptom;
+		Location userLocation;
+		char menuChoice;
+		boolean anotherSelection = true;		
 		
+		//Declaring the user interface, user, hospital list and vehicle list
+		Simulation userInterface = new Simulation();
+		UserAccount user = new UserAccount();
+		ArrayList<MedicalFacility> Facilities = new ArrayList<MedicalFacility>();
+		ArrayList<Ambulance> Ambulances = new ArrayList<Ambulance>();
+		ArrayList<Shuttle> Shuttles = new ArrayList<Shuttle>();
 		//Instantiate the list of facilities by adding some hospitals and clinics
 		Facilities.add(Facilities.size(), new Hospital("General Hospital", Location.CENTRAL));
-		Facilities.add(Facilities.size(), new Hospital("Pasqua Hospital", Location.WEST)); 
+		Facilities.add(Facilities.size(), new Hospital("Pasqua Hospital", Location.WEST));
 		Facilities.add(Facilities.size(), new Clinic("Aspen Medical Clinic", Location.SOUTHEAST));
 		Facilities.add(Facilities.size(), new Clinic("Rochdale Crossing Medical Clinic", Location.NORTHWEST)); 
 		
-		//Add the dummy users to the General hospital
+		//Add the dummy users to the General Hospital
 		Facilities.get(0).getQueue().addPatient(new UserAccount(20, "Quinn", Location.NORTH, Gender.MALE, "Quinn's Medical History", Symptom.STUBBEDTOE));
 		Facilities.get(0).getQueue().addPatient(new UserAccount(20, "Tristan", Location.SOUTHEAST, Gender.MALE, "Tristan's Medical History", Symptom.CARDIACARREST));
 		
-		//Add the dummy users to the Pasqua hospital
+		//Add the dummy users to the Pasqua Hospital
 		Facilities.get(1).getQueue().addPatient(new UserAccount(21, "Jon", Location.SOUTHWEST, Gender.MALE, "Jon's Medical History", Symptom.CHESTPAIN));
 		Facilities.get(1).getQueue().addPatient(new UserAccount(78, "Leanne", Location.CENTRAL, Gender.FEMALE, "Leanne's Medical History", Symptom.FEVER));
 		Facilities.get(1).getQueue().addPatient(new UserAccount(19, "Armin", Location.NORTHWEST, Gender.MALE, "Armin's Medical History", Symptom.SPRAIN));
@@ -280,15 +290,10 @@ public class Simulation
 		Facilities.get(3).getQueue().addPatient(new UserAccount(95, "Adam", Location.WEST, Gender.MALE, "Adam's Medical History", Symptom.ABDOMINALPAIN));
 		Facilities.get(3).getQueue().addPatient(new UserAccount(74, "Art", Location.EAST, Gender.MALE, "Art's Medical History", Symptom.COUGH));
 		
-		//Declaring local variables
-		String userName;
-		int userAge;
-		Gender userGender;
-		Symptom userSymptom;
-		Location userLocation;
-		char menuChoice;
-		boolean anotherSelection = true;
-		
+		//Instantiate the list of vehicles
+		Ambulances.add(new Ambulance(Location.NORTHWEST));
+		Shuttles.add(new Shuttle(Location.SOUTHEAST));
+				
 		//Welcome the user to the program
 		System.out.println("Welcome to the hospital emergency queue management system.");
 		System.out.println("For simplicity's sake, this app will only utilize the General and Pasqua hospitals.\n");
