@@ -217,6 +217,26 @@ public class Simulation
 		//Declaring local variables
 		String inputString;
 		
+		System.out.println("Possible options are:");
+		if (FacilityType == "Hospital" || FacilityType == "Any")
+		{
+			System.out.println("\t Hospitals:");
+			for (int i=0; i<Facilities.size(); i++)
+			{
+				if (Facilities.get(i) instanceof Hospital)
+					System.out.println("\t\t" + Facilities.get(i).getName());
+			}
+		}
+		if (FacilityType == "Clinic" || FacilityType == "Any")
+		{
+			System.out.println("\t Clinics:");
+			for (int i=0; i<Facilities.size(); i++)
+			{
+				if (Facilities.get(i) instanceof Clinic)
+					System.out.println("\t\t" + Facilities.get(i).getName());
+			}
+		}
+		
 		//Create a loop to obtain a valid integer value
 		do
 		{
@@ -381,21 +401,7 @@ public class Simulation
 					
 				//Determine the travel time to a specific facility
 				case '3':
-				{
-					System.out.println("Possible options are:");
-					System.out.println("\t Hospitals:");
-					for (int i=0; i<Facilities.size(); i++)
-					{
-						if (Facilities.get(i) instanceof Hospital)
-							System.out.println("\t\t" + Facilities.get(i).getName());
-					}
-					System.out.println("\t Clinics:");
-					for (int i=0; i<Facilities.size(); i++)
-					{
-						if (Facilities.get(i) instanceof Clinic)
-							System.out.println("\t\t" + Facilities.get(i).getName());
-					}
-					
+				{					
 					MedicalFacility desiredFacility = userInterface.determineFacilityChoice(Facilities, "Any");
 					int travelTime = userInterface.determineTravelTime(user.getLocation(), desiredFacility.getLocation());
 					
@@ -413,20 +419,7 @@ public class Simulation
 				//Determine the wait time for a specific facility
 				case '4':
 				{
-					System.out.println("Possible options are:");
-					System.out.println("\t Hospitals:");
-					for (int i=0; i<Facilities.size(); i++)
-					{
-						if (Facilities.get(i) instanceof Hospital)
-							System.out.println("\t\t" + Facilities.get(i).getName());
-					}
-					System.out.println("\t Clinics:");
-					for (int i=0; i<Facilities.size(); i++)
-					{
-						if (Facilities.get(i) instanceof Clinic)
-							System.out.println("\t\t" + Facilities.get(i).getName());
-					}
-					
+				
 					MedicalFacility desiredFacility = userInterface.determineFacilityChoice(Facilities, "Any");
 					int helpTime = desiredFacility.getQueue().getTotalWait(user.getCurrentSymptom());
 					if (helpTime == 0)
@@ -442,14 +435,7 @@ public class Simulation
 					
 				//Add the user to a hospital's emergency queue
 				case '5':
-				{
-					System.out.println("Possible hospitals are:");
-					for (int i=0; i<Facilities.size(); i++)
-					{
-						if (Facilities.get(i) instanceof Hospital)
-							System.out.println("\t" + Facilities.get(i).getName());
-					}
-					
+				{					
 					MedicalFacility desiredHospital = userInterface.determineFacilityChoice(Facilities, "Hospital");
 					desiredHospital.getQueue().addPatient(user);
 					int travelTime = userInterface.determineTravelTime(user.getLocation(), desiredHospital.getLocation());
@@ -475,14 +461,7 @@ public class Simulation
 				case '7':
 				{
 					if (user.getCurrentSymptom().getSeverityIndex() <= 3)
-					{
-						System.out.println("Possible clinics are:");
-						for (int i=0; i<Facilities.size(); i++)
-						{
-							if (Facilities.get(i) instanceof Clinic)
-								System.out.println("\t" + Facilities.get(i).getName());
-						}
-						
+					{					
 						MedicalFacility desiredClinic = userInterface.determineFacilityChoice(Facilities, "Clinic");
 						desiredClinic.getQueue().addPatient(user);
 						int travelTime = userInterface.determineTravelTime(user.getLocation(), desiredClinic.getLocation());
