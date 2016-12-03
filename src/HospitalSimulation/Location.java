@@ -11,7 +11,7 @@ public enum Location
 	EAST("East", 2, 3), 
 	SOUTHWEST("Southwest", 3, 1), 
 	SOUTH("South", 3, 2), 
-	SOUTHEAST("Southwest", 3, 3),
+	SOUTHEAST("Southeast", 3, 3),
 	DEFAULT("Default location", 0, 0);
 	
 	//Local variable

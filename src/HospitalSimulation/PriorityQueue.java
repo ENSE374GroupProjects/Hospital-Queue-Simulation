@@ -17,8 +17,9 @@ public class PriorityQueue
 	public void addPatient(UserAccount Patient)
 	{
 		//Add the patient to the queue
+		UserAccount temp = new UserAccount(Patient.getAge(), Patient.getName(), Patient.getLocation(), Patient.getGender(), Patient.getMedicalHistory(), Patient.getCurrentSymptom());
 		currentSize++;
-		queue.add(currentSize, Patient);
+		queue.add(currentSize, temp);
 		percolateUp(currentSize);
 	}
 	
@@ -96,7 +97,7 @@ public class PriorityQueue
 		for (int i=1; i<=currentSize; i++)
 		{
 			if (queue.get(i).getCurrentSymptom().getSeverityIndex() >= (userSeverity.getSeverityIndex()))
-				totalWait += queue.get(i).getCurrentSymptom().getSeverityIndex() * 4;
+				totalWait += (queue.get(i).getCurrentSymptom().getSeverityIndex() * 4);
 			
 			//Add the total wait only if the patient in the queue has a higher severity because they will be first in line.
 			//Assume that each level of severity takes approximately 4 minutes for the hospital staff.

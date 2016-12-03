@@ -294,7 +294,7 @@ public class Simulation
 		Facilities.add(Facilities.size(), new Clinic("Rochdale Crossing Medical Clinic", Location.NORTHWEST)); 
 		
 		//Add the dummy users to the General Hospital
-		Facilities.get(0).getQueue().addPatient(new UserAccount(20, "Quinn", Location.NORTH, Gender.MALE, "Quinn's Medical History", Symptom.STUBBEDTOE));
+		Facilities.get(0).getQueue().addPatient(new UserAccount(20, "Quinn", Location.NORTH, Gender.MALE, "Quinn's Medical History", Symptom.STUBBEDTOE));		
 		Facilities.get(0).getQueue().addPatient(new UserAccount(20, "Tristan", Location.SOUTHEAST, Gender.MALE, "Tristan's Medical History", Symptom.CARDIACARREST));
 		
 		//Add the dummy users to the Pasqua Hospital
@@ -434,11 +434,11 @@ public class Simulation
 					int helpTime = desiredFacility.getQueue().getTotalWait(user.getCurrentSymptom());
 					if (helpTime == 0)
 					{
-						System.out.println("It will take less than 5 minutes to get to the " + desiredFacility.getName() + ".");
+						System.out.println("It will take less than 5 minutes for the " + desiredFacility.getName() + " to treat you.");
 					}
 					else 
 					{
-						System.out.println("It will take " + helpTime + " minutes to get to the " + desiredFacility.getName() + ".");
+						System.out.println("It will take " + helpTime + " minutes for the " + desiredFacility.getName() + " to treat you.");
 					}
 					break;
 				}
