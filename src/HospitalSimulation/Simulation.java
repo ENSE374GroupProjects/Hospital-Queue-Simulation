@@ -475,6 +475,13 @@ public class Simulation
 				//Request an ambulance
 				case '6':
 				{
+					//If the user is not in a life-threatening condition, deny an ambulance
+					if (user.getCurrentSymptom().getSeverityIndex() <= 3)
+					{
+						System.out.println("Ambulances are reserved for more serious conditions.");
+						break;
+					}
+					
 					//Find the nearest ambulance to the user's location
 					Ambulance nearestAvailableAmbulance = new Ambulance();
 					int currentTime;
@@ -508,6 +515,7 @@ public class Simulation
 						//Travel to the user's location
 						nearestAvailableAmbulance.setDestination(user.getLocation());
 						nearestAvailableAmbulance.siren();
+						System.out.println("It will take the ambulance " + (userInterface.determineTravelTime(nearestAvailableAmbulance.getLocation(), nearestAvailableAmbulance.getDestination()) / (double) nearestAvailableAmbulance.getSpeed()) + " minutes to reach you.");
 						nearestAvailableAmbulance.travel();
 						
 						//Find the nearest hospital
@@ -539,6 +547,7 @@ public class Simulation
 						//Travel to the hospital
 						System.out.println("The hospital that can help you the quickest is " + nearestHospital.getName() + ".");
 						nearestAvailableAmbulance.setDestination(nearestHospital.getLocation());
+						System.out.println("It will take the ambulance " + (userInterface.determineTravelTime(nearestAvailableAmbulance.getLocation(), nearestAvailableAmbulance.getDestination()) / (double) nearestAvailableAmbulance.getSpeed()) + " minutes to reach this hospital.");
 						nearestAvailableAmbulance.travel();
 						nearestAvailableAmbulance.siren();
 					}
@@ -581,7 +590,59 @@ public class Simulation
 				//Request a shuttle
 				case '8':
 				{
-					System.out.println("Implement shuttle request here.");
+					//If the user is in a life-threatening condition, refer an ambulance
+					if (user.getCurrentSymptom().getSeverityIndex() > 3)
+					{
+						System.out.println("Call an ambulance! Your condition is quite severe.");
+						break;
+					}
+					
+					//Find the nearest shuttle to the user's location
+					Shuttle nearestAvailableShuttle = new Shuttle();
+					int currentTime;
+					int bestTime = -1;					
+					
+					//Analyze all shuttles
+					for (int i = 0; i < Shuttles.size(); i++)
+					{
+						//If the current shuttle is unavailable, it shouldn't be considered
+						if(Shuttles.get(i).isAvailable())
+						{
+							//Otherwise, determine if the current shuttle is closer than the previous best
+							currentTime = userInterface.determineTravelTime(Shuttles.get(i).getLocation(), user.getLocation());
+							
+							if (currentTime < bestTime || bestTime == -1)
+							{
+								nearestAvailableShuttle = Shuttles.get(i);
+								bestTime = currentTime;
+							}
+						}
+					}
+					
+					//If no available shuttles were found, inform the user
+					if(bestTime == -1)
+					{
+						System.out.println("No ambulances are currently available. Sorry!");
+					}
+					//Otherwise, take the user to a location of their choice
+					else
+					{		
+						//Travel to the user's location
+						nearestAvailableShuttle.setDestination(user.getLocation());
+						System.out.println("It will take the shuttle " + userInterface.determineTravelTime(nearestAvailableShuttle.getLocation(), nearestAvailableShuttle.getDestination()) + " minutes to reach you.");
+						nearestAvailableShuttle.travel();
+						
+						//Obtain the destination from the user
+						MedicalFacility destinationFacility = userInterface.determineFacilityChoice(Facilities, "Any");
+																	
+						//Travel to the facility
+						nearestAvailableShuttle.setDestination(destinationFacility.getLocation());
+						nearestAvailableShuttle.setFare(userInterface.determineTravelTime(nearestAvailableShuttle.getLocation(), nearestAvailableShuttle.getDestination()));
+						System.out.println("It will take the shuttle " + userInterface.determineTravelTime(nearestAvailableShuttle.getLocation(), nearestAvailableShuttle.getDestination()) + " minutes to reach your destination.");
+						nearestAvailableShuttle.travel();
+						nearestAvailableShuttle.payFare();
+					}
+					
 					break;
 				}
 					
