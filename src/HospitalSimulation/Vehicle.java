@@ -47,19 +47,30 @@ public abstract class Vehicle
 	//Allow the vehicle to travel
 	public void travel()
 	{
-		if(this.destination == null || this.location == this.destination)
+		if(this.destination == null)
 		{
 			//If no new destination is set, inform the user and do nothing
 			System.out.println("No destination has been set.");
 		}
+		
+		else if(this.destination == this.location)
+		{
+			//If the vehicle is already at the destination
+			System.out.println("The vehicle is already in the " + this.destination.toString() + " part of the city.");
+		}
 		else
 		{
-			//Move the vehicle and user, before resetting the destination and passenger
+			//Move the vehicle to the destination
 			System.out.println("Moving from " + location.toString() + " to " + destination.toString() + ".");
 			this.location = this.destination;
-			this.passenger.setLocation(this.location);
 			this.destination = null;			
-			this.passenger = null;
+			
+			//If a passenger was along for the ride, drop them off
+			if(this.passenger != null)
+			{
+				this.passenger.setLocation(this.location);
+				this.passenger = null;
+			}
 		}
 	}
 	
@@ -73,5 +84,11 @@ public abstract class Vehicle
 	public int getSpeed()
 	{
 		return this.speed;
+	}
+	
+	//Destination getter
+	public Location getDestination()
+	{
+		return this.destination;
 	}
 }
