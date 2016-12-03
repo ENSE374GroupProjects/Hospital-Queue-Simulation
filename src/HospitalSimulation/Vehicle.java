@@ -54,12 +54,17 @@ public abstract class Vehicle
 		}
 		else
 		{
-			//Move the vehicle and user, before resetting the destination and passenger
+			//Move the vehicle to the destination
 			System.out.println("Moving from " + location.toString() + " to " + destination.toString() + ".");
 			this.location = this.destination;
-			this.passenger.setLocation(this.location);
 			this.destination = null;			
-			this.passenger = null;
+			
+			//If a passenger was along for the ride, drop them off
+			if(this.passenger != null)
+			{
+				this.passenger.setLocation(this.location);
+				this.passenger = null;
+			}
 		}
 	}
 	

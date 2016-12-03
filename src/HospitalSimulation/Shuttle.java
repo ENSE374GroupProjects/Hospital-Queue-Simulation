@@ -7,6 +7,16 @@ public class Shuttle extends Vehicle
 	double fare;
 	private static DecimalFormat currencyFormat = new DecimalFormat("#0.00");
 	
+	//Default constructor
+	public Shuttle()
+	{		
+		//Pass along specific shuttle information to the super constructor
+		super(Location.DEFAULT, 1);		//Shuttles travel at civilian speed
+		
+		//Set the default cost to 0
+		this.fare = 0;
+	}	
+	
 	//Initializing constructor
 	public Shuttle(Location location)
 	{

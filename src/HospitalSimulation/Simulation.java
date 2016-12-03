@@ -231,7 +231,7 @@ public class Simulation
 				{
 					if (inputString.toUpperCase().equals(Facilities.get(i).getName().toUpperCase()))
 					{
-						//typecasting to a hospital because we already check that the instance is a hospital
+						//Typecasting to a hospital because we already check that the instance is a hospital
 						return Facilities.get(i);
 					}
 				}
@@ -242,16 +242,16 @@ public class Simulation
 	}
 	
 	//Function to determine travel time (with a 5-minute travel time between adjacent locations)
-	public int determineTravelTime(Location userLocation, Location hospitalLocation)
+	public int determineTravelTime(Location locationOne, Location locationTwo)
 	{
-		int distance = Math.abs((userLocation.getXCoordinate() - hospitalLocation.getXCoordinate()) + (userLocation.getYCoordinate() - hospitalLocation.getYCoordinate()));
+		int distance = Math.abs(locationOne.getXCoordinate() - locationTwo.getXCoordinate()) + Math.abs(locationOne.getYCoordinate() - locationTwo.getYCoordinate());
 		int time = distance * 5;
 		return time;
 	}
 		
 	//Main function
 	public static void main(String[] args) 
-	{
+	{		
 		//Declaring local variables
 		String userName;
 		int userAge;
@@ -259,7 +259,7 @@ public class Simulation
 		Symptom userSymptom;
 		Location userLocation;
 		char menuChoice;
-		boolean anotherSelection = true;		
+		boolean anotherSelection = true;	
 		
 		//Declaring the user interface, user, hospital list and vehicle list
 		Simulation userInterface = new Simulation();
@@ -293,13 +293,18 @@ public class Simulation
 		Facilities.get(3).getQueue().addPatient(new UserAccount(95, "Adam", Location.WEST, Gender.MALE, "Adam's Medical History", Symptom.ABDOMINALPAIN));
 		Facilities.get(3).getQueue().addPatient(new UserAccount(74, "Art", Location.EAST, Gender.MALE, "Art's Medical History", Symptom.COUGH));
 		
-		//Instantiate the list of vehicles
+		//Instantiate the lists of vehicles
 		Ambulances.add(new Ambulance(Location.NORTHWEST));
-		Shuttles.add(new Shuttle(Location.SOUTHEAST));
-				
+		Ambulances.add(new Ambulance(Location.NORTHEAST));
+		Ambulances.add(new Ambulance(Location.SOUTHWEST));
+		Ambulances.add(new Ambulance(Location.SOUTHEAST));
+		Shuttles.add(new Shuttle(Location.NORTH));
+		Shuttles.add(new Shuttle(Location.EAST));
+		Shuttles.add(new Shuttle(Location.SOUTH));
+		Shuttles.add(new Shuttle(Location.WEST));
+		
 		//Welcome the user to the program
-		System.out.println("Welcome to the hospital emergency queue management system.");
-		System.out.println("For simplicity's sake, this app will only utilize the General and Pasqua hospitals.\n");
+		System.out.println("Welcome to the hospital emergency queue management system.\n");
 		
 		//Obtain and set the user's name
 		System.out.print("Please enter your name: ");
@@ -470,14 +475,80 @@ public class Simulation
 				//Request an ambulance
 				case '6':
 				{
-					System.out.println("Implement ambulance request here.");
+					//Find the nearest ambulance to the user's location
+					Ambulance nearestAvailableAmbulance = new Ambulance();
+					int currentTime;
+					int bestTime = -1;					
+					
+					//Analyze all ambulances
+					for (int i = 0; i < Ambulances.size(); i++)
+					{
+						//If the current ambulance is unavailable, it shouldn't be considered
+						if(Ambulances.get(i).isAvailable())
+						{
+							//Otherwise, determine if the current ambulance is closer than the previous best
+							currentTime = userInterface.determineTravelTime(Ambulances.get(i).getLocation(), user.getLocation());
+							
+							if (currentTime < bestTime || bestTime == -1)
+							{
+								nearestAvailableAmbulance = Ambulances.get(i);
+								bestTime = currentTime;
+							}
+						}
+					}
+					
+					//If no available ambulances were found, inform the user
+					if(bestTime == -1)
+					{
+						System.out.println("No ambulances are currently available. Sorry!");
+					}
+					//Otherwise, take the user to the nearest hospital
+					else
+					{
+						//Travel to the user's location
+						nearestAvailableAmbulance.setDestination(user.getLocation());
+						nearestAvailableAmbulance.siren();
+						nearestAvailableAmbulance.travel();
+						
+						//Find the nearest hospital
+						Hospital nearestHospital = new Hospital();
+						int travelTime;
+						int waitTime;
+						int totalWaitTime;
+						int fastestWaitTime = -1;
+												
+						for (int i = 0; i < Facilities.size(); i++)
+						{
+							//If the current facility is a hospital, it should be considered
+							if(Facilities.get(i) instanceof Hospital)
+							{
+								//Get the total time for the current hospital
+								travelTime = userInterface.determineTravelTime(Facilities.get(i).getLocation(), user.getLocation());			//Determine the travel time to the hospital from the user's location
+								waitTime = Facilities.get(i).getQueue().getTotalWait(user.getCurrentSymptom());	//Determine the specific hospital's wait time
+								totalWaitTime =  waitTime + travelTime;
+								
+								//If the total time is better, update the best hospital
+								if (totalWaitTime < fastestWaitTime || fastestWaitTime == -1)
+								{
+									nearestHospital = (Hospital) Facilities.get(i);
+									fastestWaitTime = totalWaitTime;
+								}
+							}
+						}
+						
+						//Travel to the hospital
+						System.out.println("The hospital that can help you the quickest is " + nearestHospital.getName() + ".");
+						nearestAvailableAmbulance.setDestination(nearestHospital.getLocation());
+						nearestAvailableAmbulance.travel();
+						nearestAvailableAmbulance.siren();
+					}
+					
 					break;
 				}
 				
 				//Add the user to a clinic's waitlist
 				case '7':
 				{
-
 					if (user.getCurrentSymptom().getSeverityIndex() <= 3)
 					{
 						System.out.println("Possible clinics are:");

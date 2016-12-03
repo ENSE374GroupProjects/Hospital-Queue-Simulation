@@ -5,6 +5,16 @@ public class Ambulance extends Vehicle
 	//Private variables
 	private boolean sirenOn;
 	
+	//Default constructor
+	public Ambulance()
+	{		
+		//Pass along specific ambulance information to the super constructor
+		super(Location.DEFAULT, 2);		//Ambulances travel faster due to emergencies
+		
+		//Siren should be off by default
+		sirenOn = false;
+	}	
+	
 	//Initializing constructor
 	public Ambulance(Location location)
 	{		
